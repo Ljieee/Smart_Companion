@@ -66,5 +66,19 @@ dependencies {
 
         // 4. Lifecycle Utilities (for collecting states)
         implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.7")
+
+        // Core Compose libraries (Required for Image and Box)
+        implementation("androidx.compose.ui:ui")
+        implementation("androidx.compose.foundation:foundation")
+        implementation("androidx.compose.material3:material3")
+
+        // For using painterResource
+        implementation("androidx.compose.ui:ui-tooling-preview")
+
+        // If you plan to load images from a URL (optional but recommended)
+        implementation("io.coil-kt:coil-compose:2.5.0")
     }
-}
+
+
+
+    }
