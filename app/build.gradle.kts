@@ -53,4 +53,18 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
+
+    dependencies {
+        // 1. Navigation for switching between Login, Dashboard, and Info screens
+        implementation("androidx.navigation:navigation-compose:2.8.5")
+
+        // 2. ViewModel for MVVM Architecture
+        implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
+
+        // 3. Material Icons (Extended) - Needed for the specific icons in the UI mockup
+        implementation("androidx.compose.material:material-icons-extended:1.7.6")
+
+        // 4. Lifecycle Utilities (for collecting states)
+        implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.7")
+    }
 }
