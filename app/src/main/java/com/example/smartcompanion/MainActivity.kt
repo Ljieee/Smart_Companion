@@ -1,4 +1,4 @@
-package com.example.smartcampus
+package com.example.smartconpanion
 
 
 import android.os.Bundle
@@ -23,9 +23,16 @@ class MainActivity : ComponentActivity() {
             val startRoute = if (authViewModel.isLoggedIn) "dashboard" else "login"
 
             NavHost(navController = navController, startDestination = startRoute) {
-                composable("login") { LoginScreen(navController, authViewModel) }
-                composable("dashboard") { DashBoardScreen(navController) }
-                composable("campus_info") { CampusInfoScreen(campusViewModel) }
+                composable("login") {
+                    LoginScreen(navController, authViewModel)
+                }
+                composable("dashboard") {
+                    DashBoardScreen(navController)
+                }
+                // FIX: Pass BOTH navController and campusViewModel
+                composable("campus_info") {
+                    CampusInfoScreen(navController, campusViewModel)
+                }
             }
         }
     }

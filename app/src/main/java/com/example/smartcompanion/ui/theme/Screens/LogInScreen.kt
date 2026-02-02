@@ -2,6 +2,7 @@ package com.example.smartcompanion.ui.theme.Screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
@@ -9,6 +10,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -19,14 +21,45 @@ import androidx.navigation.compose.rememberNavController
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.smartcompanion.ui.theme.ViewModel.AuthViewModel
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.smartcompanion.R // Ensure this import is correct
+import com.example.smartcompanion.R
 
+/**
+ * STATEFUL COMPOSABLE
+ * Use this in your NavHost. It handles the ViewModel and Navigation logic.
+ */
 @Composable
 fun LoginScreen(navController: NavController, viewModel: AuthViewModel) {
+    LoginContent(
+        onLoginClick = { email, password ->
+            viewModel.login(email, password) {
+                navController.navigate("dashboard")
+            }
+        },
+        onSignUpClick = {
+            // Add navigation to sign up screen here if needed
+            // navController.navigate("signup")
+        }
+    )
+}
+
+/**
+ * STATELESS COMPOSABLE
+ * Use this for Previews and UI design. It only knows about UI state.
+ */
+@Composable
+fun LoginContent(
+    onLoginClick: (String, String) -> Unit,
+    onSignUpClick: () -> Unit = {}
+) {
+    // UI Local State
     var user by remember { mutableStateOf("") }
     var pass by remember { mutableStateOf("") }
 
-    Box(modifier = Modifier.fillMaxSize().background(Color(0xFFEBEBEB))) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFFEBEBEB))
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -35,20 +68,16 @@ fun LoginScreen(navController: NavController, viewModel: AuthViewModel) {
         ) {
             Spacer(modifier = Modifier.height(40.dp))
 
-            // 1. University Header (Image + Text)
-            // Replace with your actual drawable resource names
+            // 1. University Logo
             Image(
-                painter = painterResource(id = R.drawable.university_logo_text),
+                painter = painterResource(id = R.drawable.smart),
                 contentDescription = "University Name",
-                modifier = Modifier.height(60.dp)
-            )
+                modifier = Modifier
+                    .height(300.dp)
+                    .width(300.dp),
+                contentScale = ContentScale.Fit
 
-            Spacer(modifier = Modifier.height(16.dp))
 
-            Image(
-                painter = painterResource(id = R.drawable.university_seal),
-                contentDescription = "University Seal",
-                modifier = Modifier.size(120.dp)
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -62,12 +91,17 @@ fun LoginScreen(navController: NavController, viewModel: AuthViewModel) {
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // 2. Input Fields
-            Text("Email", modifier = Modifier.fillMaxWidth().padding(start = 12.dp), color = Color.DarkGray)
+            // 2. Email Field
+            Text(
+                "Email",
+                modifier = Modifier.fillMaxWidth().padding(start = 12.dp),
+                color = Color.DarkGray,
+                fontSize = 14.sp
+            )
             TextField(
                 value = user,
                 onValueChange = { user = it },
-                placeholder = { Text("johndoe@exemple.com", color = Color.Gray) },
+                placeholder = { Text("johndoe@example.com", color = Color.Gray) },
                 modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
                 shape = RoundedCornerShape(25.dp),
                 colors = TextFieldDefaults.colors(
@@ -80,7 +114,13 @@ fun LoginScreen(navController: NavController, viewModel: AuthViewModel) {
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            Text("Password", modifier = Modifier.fillMaxWidth().padding(start = 12.dp), color = Color.DarkGray)
+            // 3. Password Field
+            Text(
+                "Password",
+                modifier = Modifier.fillMaxWidth().padding(start = 12.dp),
+                color = Color.DarkGray,
+                fontSize = 14.sp
+            )
             TextField(
                 value = pass,
                 onValueChange = { pass = it },
@@ -95,56 +135,45 @@ fun LoginScreen(navController: NavController, viewModel: AuthViewModel) {
                 )
             )
 
-            // 3. Login Button
+            // 4. Login Button
             Button(
-                onClick = { viewModel.login(user, pass) { navController.navigate("dashboard") } },
+                onClick = { onLoginClick(user, pass) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 32.dp)
                     .height(55.dp),
                 shape = RoundedCornerShape(25.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1B5E20)) // Dark Green
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF01579B))
             ) {
                 Text("Log in", fontSize = 18.sp, color = Color.White)
             }
 
-            Spacer(modifier = Modifier.height(32.dp))
-
-            // 4. Social Login Section
-            Text("Log in with", color = Color.Gray, fontSize = 16.sp)
-            Spacer(modifier = Modifier.height(12.dp))
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                // Replace these with your actual icon drawables (google, facebook, github)
-                SocialIcon(R.drawable.ic_google)
-                SocialIcon(R.drawable.ic_facebook)
-                SocialIcon(R.drawable.ic_github)
-            }
-
             Spacer(modifier = Modifier.weight(1f))
 
-            // 5. Footer (Sign up)
-            Row {
+            // 5. Footer
+            Row(
+                modifier = Modifier.padding(bottom = 16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Text("No account? ", color = Color.Gray)
                 Text(
                     "Sign up",
-                    color = Color(0xFF1B5E20),
+                    color = Color(0xFF01579B),
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.clickable { /* Navigate to Sign Up */ }
+                    modifier = Modifier.clickable { onSignUpClick() }
                 )
             }
-            Spacer(modifier = Modifier.height(16.dp))
         }
     }
-}
-
+}/**
+ * PREVIEW
+ * Now points to the Stateless version (LoginContent)
+ */
+@Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun SocialIcon(iconRes: Int) {
-    Image(
-        painter = painterResource(id = iconRes),
-        contentDescription = null,
-        modifier = Modifier.size(32.dp)
-    )
+fun LoginScreenPreview() {
+    MaterialTheme {
+        // No ViewModel needed here anymore!
+        LoginContent(onLoginClick = { _, _ -> })
+    }
 }
